@@ -1,0 +1,49 @@
+VAGRANTFILE_API_VERSION = "2"
+
+
+
+# Read the login from the config file
+login = File.read(File.join(File.dirname(__FILE__), "confs/user.conf")).strip
+
+# Strict login check
+unless ["lmattern", "fprevot"].include?(login)
+  raise "[ERROR] The login in confs/user.conf must be 'lmattern' or 'fprevot' (current: '#{login}')"
+end
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.vm.box = "ubuntu/bionic64"
+
+
+  config.vm.define "#{login}S" do |server|
+    server.vm.hostname = "#{login}S"
+    server.vm.network "private_network", ip: "192.168.56.110"
+    server.vm.provider "virtualbox" do |vb|
+      vb.memory = 1024
+      vb.cpus = 1
+    end
+    server.vm.provision "shell", path: "./scripts/install_k3s_server.sh"
+  end
+
+
+  config.vm.define "#{login}SW" do |agent|
+    agent.vm.hostname = "#{login}SW"
+    agent.vm.network "private_network", ip: "192.168.56.111"
+    agent.vm.provider "virtualbox" do |vb|
+      vb.memory = 1024
+      vb.cpus = 1
+    end
+    # Delayed provisioning to get the server token
+    agent.vm.provision "shell", inline: <<-SHELL
+      until [ -f /vagrant/server_token ]; do sleep 2; done
+      K3S_TOKEN=$(cat /vagrant/server_token)
+      bash /vagrant/scripts/install_k3s_agent.sh "https://192.168.56.110:6443" "$K3S_TOKEN"
+    SHELL
+  end
+
+  # After server installation, copy the token for the agent
+  config.vm.provision "shell", run: "always", inline: <<-SHELL
+    if [ -f /etc/rancher/k3s/k3s-token ]; then
+      cp /etc/rancher/k3s/k3s-token /vagrant/server_token
+    fi
+  SHELL, privileged: false
+end
