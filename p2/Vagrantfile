@@ -1,0 +1,13 @@
+config_vars = Hash[File.readlines("confs/config.env").map { |line| line.strip.split('=', 2) }]
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bookworm64"
+  config.vm.synced_folder "./confs", "/vagrant"
+  
+  config.vm.define "#{config_vars['USER']}S", primary: true do |server|
+    server.vm.hostname = "#{config_vars['USER']}S"
+    server.vm.network "private_network", ip: config_vars["SERVER_IP"]
+    server.vm.provider("virtualbox") { |vb| vb.name = "#{config_vars['USER']}S"; vb.memory = 2048; vb.cpus = 2 }
+    server.vm.provision "shell", path: "scripts/setup.sh"
+  end
+end

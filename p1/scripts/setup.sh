@@ -14,5 +14,3 @@ else
 	export INSTALL_K3S_EXEC="--flannel-iface=${FLANNEL_IFACE}"
 	curl -sfL https://get.k3s.io | sh -
 fi
-
-install -D -m 644 -o vagrant -g vagrant /vagrant/k3s.yaml ${KUBECONFIG}

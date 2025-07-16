@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
       machine.vm.hostname = name
       machine.vm.network "private_network", ip: ip
       machine.vm.provider("virtualbox") { |vb| vb.name = name; vb.memory = memory; vb.cpus = cpus }
-      machine.vm.provision "shell", path: "scripts/init.sh", args: [role]
+      machine.vm.provision "shell", path: "scripts/setup.sh", args: [role]
     end
   end
 end
