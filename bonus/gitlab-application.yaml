@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitlab
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.gitlab.io/
+    chart: gitlab
+    targetRevision: 9.2.1
+    helm:
+      values: |
+        certmanager-issuer:
+          email: qroyo.student@42lyon.fr
+        global:
+          upgrade:
+            skipCheck: true
+          edition: ce
+          hosts:
+            domain: localhost
+            externalIP: 127.0.0.1
+        gitlab:
+          toolbox:
+            replicas: 1
+          webservice:
+            replicas: 1
+          sidekiq:
+            replicas: 1
+        nginx-ingress:
+          enabled: false
+        prometheus:
+          install: false
+  destination:
+    namespace: gitlab
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
