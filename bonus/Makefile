@@ -1,6 +1,12 @@
 .PHONY: bonus-gitlab bonus-status
 
-all: bonus-gitlab
+all: bonus-secret bonus-gitlab
+
+bonus-secret:
+	kubectl create namespace gitlab --dry-run=client -o yaml | kubectl apply -f -
+	kubectl create secret generic gitlab-initial-root-password \
+		--from-literal=password='rootpassword' \
+		-n gitlab || true
 
 bonus-gitlab:
 	kubectl apply -f gitlab-application.yaml
@@ -29,13 +35,3 @@ clean:
 	# Attendre que le namespace soit supprimé
 	while kubectl get namespace gitlab >/dev/null 2>&1; do echo "Waiting for namespace to be deleted..."; sleep 5; done
 	echo "Namespace deleted successfully"
-#	kubectl delete application gitlab -n argocd --ignore-not-found=true
-#	kubectl patch application gitlab -n argocd --type merge -p '{"metadata":{"finalizers":null}}' || true
-#	helm uninstall gitlab -n gitlab || true
-#	kubectl delete namespace gitlab --ignore-not-found=true
-#	kubectl get pv | grep -E "(gitlab|gitaly|postgresql|redis)" | awk '{print $$1}' | xargs -r kubectl delete pv || true
-#	sudo sed -i '/local.gitlab.com/d' /etc/hosts || true
-#	kubectl delete application gitlab -n argocd
-#	kubectl delete jobs --all -n gitlab
-#	kubectl delete pods --all -n gitlab --force --grace-period=0
-#	kubectl delete namespace gitlab --ignore-not-found=true
