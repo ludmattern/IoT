@@ -4,7 +4,7 @@ set -e
 
 echo "==> Installing dependencies..."
 sudo apt update
-sudo apt install -y curl gnupg lsb-release ca-certificates apt-transport-https software-properties-common
+sudo apt install -y curl gnupg lsb-release ca-certificates apt-transport-https
 
 # echo "==> Installing Docker..."
 # curl -fsSL https://get.docker.com | sudo sh
