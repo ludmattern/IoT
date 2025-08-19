@@ -30,11 +30,11 @@ spec:
           edition: ce
           hosts:
             domain: qroyo.com
-            https: true       # TLS activé globalement
+            https: true
             externalIP: 127.0.0.1
             gitlab:
               name: gitlab.qroyo.com
-              https: true    # TLS activé sur GitLab
+              https: true
           initialRootPassword:
             secret: gitlab-initial-root-password
           kubernetes:
@@ -45,6 +45,8 @@ spec:
             enabled: true
             class: "traefik"
           minio:
+            enabled: false
+          kas:
             enabled: false
           appConfig:
             artifacts:
@@ -73,6 +75,7 @@ spec:
                 traefik.ingress.kubernetes.io/router.tls: "true"
               tls:
                 enabled: true
+                secretName: gitlab-tls-cert
               hosts:
                 - host: gitlab.qroyo.com
                   paths:
