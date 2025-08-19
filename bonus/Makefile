@@ -1,9 +1,14 @@
-.PHONY: bonus-gitlab bonus-status
+.PHONY: bonus-tls bonus-secret bonus-gitlab bonus-status all clean
 
-all: bonus-secret bonus-gitlab
+all: bonus-tls bonus-secret bonus-gitlab
+
+bonus-tls:
+	kubectl create namespace gitlab --dry-run=client -o yaml | kubectl apply -f -
+	kubectl create secret tls gitlab-tls-cert -n gitlab --cert=gitlab.qroyo.com.pem --key=gitlab.qroyo.com-key.pem
 
 bonus-secret:
 	kubectl create namespace gitlab --dry-run=client -o yaml | kubectl apply -f -
+	kubectl -n gitlab delete secret gitlab-initial-root-password --ignore-not-found=true
 	kubectl create secret generic gitlab-initial-root-password \
 		--from-literal=password='rootpassword' \
 		-n gitlab || true
@@ -16,9 +21,18 @@ bonus-status:
 	kubectl get application -n argocd
 
 describe:
-	kubectl describe application gitlab -n argocd
-#	kubectl get pods -n gitlab
-#	kubectl get svc -n gitlab
+	watch kubectl get pods -n gitlab
+
+argocd:
+	@kubectl port-forward svc/argocd-server -n argocd 8080:443 > /dev/null 2>&1 &
+	@echo "ArgoCD accessible at : https://localhost:8080"
+	@echo -n "Login: admin, password: "
+	@kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+
+gitlab:
+	@kubectl port-forward svc/traefik -n kube-system 8443:443
+	@echo "Gitlab accessible at : https://gitlab.qroyo.com:8443"
+	@echo -n "Login: root, password: rootpassword"
 
 clean:
 	# Supprimer l'app ArgoCD AVANT de supprimer le namespace
