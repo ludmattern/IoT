@@ -35,8 +35,6 @@ spec:
             gitlab:
               name: gitlab.qroyo.com
               https: true
-          initialRootPassword:
-            secret: gitlab-initial-root-password
           kubernetes:
             inCluster: true
           grafana:

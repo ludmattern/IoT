@@ -9,9 +9,9 @@ bonus-tls:
 bonus-secret:
 	kubectl create namespace gitlab --dry-run=client -o yaml | kubectl apply -f -
 	kubectl -n gitlab delete secret gitlab-initial-root-password --ignore-not-found=true
-	kubectl create secret generic gitlab-initial-root-password \
-		--from-literal=password='rootpassword' \
-		-n gitlab || true
+#	kubectl create secret generic gitlab-initial-root-password \
+#		--from-literal=password='rootpassword' \
+#		-n gitlab || true
 
 bonus-gitlab:
 	kubectl apply -f gitlab-application.yaml
@@ -30,9 +30,10 @@ argocd:
 	@kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
 
 gitlab:
-	@kubectl port-forward svc/traefik -n kube-system 8443:443
+	@kubectl port-forward svc/traefik -n kube-system 8443:443 &
 	@echo "Gitlab accessible at : https://gitlab.qroyo.com:8443"
-	@echo -n "Login: root, password: rootpassword"
+	@echo -n "Login: root, password:"
+	@kubectl get secret gitlab-gitlab-initial-root-password -n gitlab -o jsonpath="{.data.password}" | base64 -d && echo 	
 
 clean:
 	# Supprimer l'app ArgoCD AVANT de supprimer le namespace
@@ -49,3 +50,11 @@ clean:
 	# Attendre que le namespace soit supprimé
 	while kubectl get namespace gitlab >/dev/null 2>&1; do echo "Waiting for namespace to be deleted..."; sleep 5; done
 	echo "Namespace deleted successfully"
+	
+	@PORT_PID=$$(sudo lsof -ti :8443) && \
+	if [ -n "$$PORT_PID" ]; then \
+		echo "Killing process using port 8443 (PID=$$PORT_PID)"; \
+		sudo kill -9 $$PORT_PID; \
+	else \
+		echo "Port 8443 is free"; \
+	fi
