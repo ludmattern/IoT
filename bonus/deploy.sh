@@ -12,10 +12,12 @@ else
     echo "📁 Le dépôt IoT existe déjà, on continue."
 fi
 
+git config --global user.email qroyo@student.42lyon.fr
+git config --global user.name qroyo
+
 echo "⚙️ Compilation du projet dans ~/Documents/IoT/p3..."
 cd ~/Documents/IoT/p3 || { echo "❌ Dossier ~/Documents/IoT/p3 introuvable."; exit 1; }
 
-make clean
 make
 
 echo "⚙️ Deplacement dans ~/Documents/IoT/bonus..."
@@ -43,7 +45,6 @@ helm install cert-manager jetstack/cert-manager \
 echo "⚙️ Compilation du projet dans ~/Documents/IoT/bonus..."
 cd ~/Documents/IoT/bonus || { echo "❌ Dossier ~/Documents/IoT/bonus introuvable."; exit 1; }
 
-make clean
 make all
 make describe
 

@@ -3,7 +3,7 @@
 set -e
 
 echo "🔐 Ajout de l'utilisateur au groupe sudo..."
-sudo usermod -aG sudo "$USER"
+sudo usermod -aG sudo qroyo
 
 echo "💿 Mise à jour de /etc/apt/sources.list avec les dépôts Trixie..."
 sudo tee /etc/apt/sources.list > /dev/null <<EOF
@@ -20,20 +20,12 @@ EOF
 
 echo "🛠️ Mise à jour des paquets et installation de git, curl, wget, libnss3-tools..."
 sudo apt update
-sudo apt install -y git curl wget libnss3-tools
-
-# Génération de la clé SSH
-echo "🔑 Génération de la clé SSH RSA..."
-ssh-keygen -t rsa -b 4096 -C "qroyo@student.42lyon.fr"
-
-echo "Voici votre clé publique SSH (copiez-la dans GitHub) :"
-cat ~/.ssh/id_rsa.pub
-echo ""
+sudo apt install -y git curl wget libnss3-tools build-essential
 
 # Installation de Docker
 echo "🐳 Installation de Docker..."
 curl -fsSL https://get.docker.com | sudo sh
-sudo usermod -aG docker "$USER"
+sudo usermod -aG docker qroyo
 
 # Installation de mkcert
 echo "🔒 Installation de mkcert..."
@@ -61,5 +53,10 @@ else
     echo "✅ gitlab.qroyo.com est déjà dans /etc/hosts"
 fi
 
+echo "🔑 Génération de la clé SSH RSA..."
+su - qroyo -c 'ssh-keygen -t rsa -b 4096 -C "qroyo@student.42lyon.fr"'
+
+echo "Voici votre clé publique SSH (copiez-la dans GitHub) :"
+su - qroyo -c 'cat ~/.ssh/id_rsa.pub'
 echo ""
 echo "✅ Environnement de base prêt. Déconnecte-toi puis reconnecte-toi pour activer les groupes sudo et docker."
