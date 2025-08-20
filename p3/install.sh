@@ -39,6 +39,11 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 echo "==> Exposing ArgoCD via LoadBalancer..."
 kubectl apply -f argocd-server-lb.yaml
 
+echo "==> Waiting for ArgoCD LoadBalancer to be provisioned..."
+while [[ -z $(kubectl get svc argocd-server-lb -n argocd -o jsonpath='{.status.loadBalancer.ingress}') ]]; do
+  echo " Waiting for LoadBalancer IP..."
+  sleep 2
+done
 
 echo "==> Waiting for ArgoCD pods to be ready..."
 while [[ $(kubectl get pods -n argocd --no-headers | grep -v 'Running\|Completed') ]]; do
