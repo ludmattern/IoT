@@ -26,6 +26,18 @@ spec:
           install: false
         registry:
           enabled: false
+        postgresql:
+          image:
+            repository: bitnamilegacy/postgresql
+            tag: "13.6.0"
+          metrics:
+            enabled: false
+        redis:
+          image:
+            repository: bitnamilegacy/redis
+            tag: "6.2.7"
+          metrics:
+            enabled: false
         global:
           edition: ce
           hosts:
