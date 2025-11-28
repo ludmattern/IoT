@@ -11,6 +11,8 @@ if [ "$1" = "controller" ]; then
 	install -D -m 644 /var/lib/rancher/k3s/server/node-token /vagrant/token
 else
 	while [ ! -f "/vagrant/token" ]; do sleep 2; done
+	export K3S_URL=https://${CONTROLLER_IP}:6443
+	export K3S_TOKEN=$(cat /vagrant/token)
 	export INSTALL_K3S_EXEC="--flannel-iface=${FLANNEL_IFACE}"
 	curl -sfL https://get.k3s.io | sh -
 fi
