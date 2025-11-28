@@ -17,10 +17,5 @@ sudo helm upgrade --install gitlab gitlab/gitlab \
   --set global.hosts.externalIP=0.0.0.0 \
   --set global.hosts.https=false \
   --timeout 600s
-
-echo -n "USER: root GITLAB PASSWORD : "
-  sudo kubectl get secret gitlab-gitlab-initial-root-password -n gitlab -o jsonpath="{.data.password}" | base64 --decode
-
-sudo kubectl port-forward svc/gitlab-webservice-default -n gitlab 80:8181 &
-
-echo -n "link to gitlab : http://127.0.0.1"
+  
+sudo watch kubectl get pods -n gitlab
