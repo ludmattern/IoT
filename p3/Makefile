@@ -10,7 +10,7 @@ cluster:
 	kubectl get ns
 
 clean:
-	k3d cluster delete iot-cluster
+	sudo k3d cluster delete iot-cluster
 
 status:
 	kubectl get pods -n argocd

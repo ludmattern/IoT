@@ -3,7 +3,7 @@
 set -e
 
 echo "🔐 Ajout de l'utilisateur au groupe sudo..."
-sudo usermod -aG sudo qroyo
+sudo usermod -aG sudo lmattern
 
 echo "💿 Mise à jour de /etc/apt/sources.list avec les dépôts Trixie..."
 sudo tee /etc/apt/sources.list > /dev/null <<EOF
@@ -25,7 +25,7 @@ sudo apt install -y git curl wget libnss3-tools build-essential
 # Installation de Docker
 echo "🐳 Installation de Docker..."
 curl -fsSL https://get.docker.com | sudo sh
-sudo usermod -aG docker qroyo
+sudo usermod -aG docker lmattern
 
 # Installation de mkcert
 echo "🔒 Installation de mkcert..."
@@ -46,17 +46,17 @@ else
     echo "✅ Helm est déjà installé."
 fi
 
-echo "🧾 Ajout de gitlab.qroyo.com dans /etc/hosts..."
-if ! grep -q "gitlab.qroyo.com" /etc/hosts; then
-    echo "127.0.0.1 gitlab.qroyo.com" | sudo tee -a /etc/hosts
+echo "🧾 Ajout de gitlab.lmattern.com dans /etc/hosts..."
+if ! grep -q "gitlab.lmattern.com" /etc/hosts; then
+    echo "127.0.0.1 gitlab.lmattern.com" | sudo tee -a /etc/hosts
 else
-    echo "✅ gitlab.qroyo.com est déjà dans /etc/hosts"
+    echo "✅ gitlab.lmattern.com est déjà dans /etc/hosts"
 fi
 
 echo "🔑 Génération de la clé SSH RSA..."
-su - qroyo -c 'ssh-keygen -t rsa -b 4096 -C "qroyo@student.42lyon.fr"'
+su - lmattern -c 'ssh-keygen -t rsa -b 4096 -C "lmattern@student.42lyon.fr"'
 
 echo "Voici votre clé publique SSH (copiez-la dans GitHub) :"
-su - qroyo -c 'cat ~/.ssh/id_rsa.pub'
+su - lmattern -c 'cat ~/.ssh/id_rsa.pub'
 echo ""
 echo "✅ Environnement de base prêt. Déconnecte-toi puis reconnecte-toi pour activer les groupes sudo et docker."
