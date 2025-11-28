@@ -10,4 +10,4 @@ gitlab:
 	bash access_gitlab.sh
 
 clean:
-  	sudo kubectl delete namespace gitlab
+	sudo kubectl delete namespace gitlab
