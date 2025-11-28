@@ -9,5 +9,8 @@ describe:
 gitlab:
 	bash access_gitlab.sh
 
+install:
+	bash install.sh
+
 clean:
   	sudo kubectl delete namespace gitlab
