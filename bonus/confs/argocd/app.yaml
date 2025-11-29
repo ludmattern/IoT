@@ -9,7 +9,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    repoURL: http://gitlab-webservice-default.gitlab.svc.cluster.local:8181/root/lmattern.git
+    repoURL: http://gitlab-webservice-default.gitlab.svc.cluster.local:8181/root/qroyo.git
     targetRevision: HEAD
     path: apps/playground
   syncPolicy:

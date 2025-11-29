@@ -17,4 +17,4 @@ migrate:
 
 clean:
 	sudo kubectl delete namespace gitlab || true
-	sudo fuser -k 8080/tcp
+	sudo fuser -k 8080/tcp || true
