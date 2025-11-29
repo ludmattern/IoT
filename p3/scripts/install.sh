@@ -37,7 +37,7 @@ echo "==> Installing ArgoCD..."
 sudo kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 echo "==> Exposing ArgoCD via LoadBalancer..."
-sudo kubectl apply -f argocd-server-lb.yaml
+sudo kubectl apply -f ../confs/argocd-server-lb.yaml
 
 echo "==> Waiting for ArgoCD LoadBalancer to be provisioned..."
 while [[ -z $(sudo kubectl get svc argocd-server-lb -n argocd -o jsonpath='{.status.loadBalancer.ingress}') ]]; do
@@ -52,7 +52,7 @@ while [[ $(sudo kubectl get pods -n argocd --no-headers | grep -v 'Running\|Comp
 done
 
 echo "==> Deploying ArgoCD application..."
-sudo kubectl apply -f argocd/app.yaml
+sudo kubectl apply -f ../confs/argocd/app.yaml
 
 echo "==> Waiting for app pods to be ready..."
 while [[ $(sudo kubectl get pods -n dev --no-headers | grep -v 'Running\|Completed') ]]; do
