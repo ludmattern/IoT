@@ -3,7 +3,7 @@
 all: install
 
 install:
-	bash install.sh
+	bash scripts/install.sh
 
 cluster:
 	kubectl get nodes
@@ -20,7 +20,7 @@ argo-sync:
 	kubectl port-forward svc/argocd-server -n argocd 8888:80
 
 app-sync:
-	kubectl apply -f argocd/app.yaml
+	kubectl apply -f confs/argocd/app.yaml
 
 argo-password:
 	@echo "Argo CD admin password:"
