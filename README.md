@@ -58,6 +58,12 @@ sudo usermod -aG vboxusers $USER
 # Restart terminal or logout/login
 ```
 
+### 5. Make it work inside virtualBox
+```bash
+sudo modprobe -r kvm_intel
+sudo modprobe -r kvm
+```
+
 ## Verification
 
 ```bash
