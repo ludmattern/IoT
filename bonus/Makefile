@@ -1,19 +1,19 @@
 .PHONY: clean describe gitlab all install migrate
 
 all:
-	bash script.sh
+	bash scripts/config_gitlab.sh
 
 describe:
 	sudo watch kubectl get pods -n gitlab
 
 gitlab:
-	bash access_gitlab.sh
+	bash scripts/access_gitlab.sh
 
 install:
-	bash install.sh
+	bash scripts/install.sh
 
 migrate:
-	sudo kubectl apply -f ./argocd/app.yaml
+	sudo kubectl apply -f confs/argocd/app.yaml
 
 clean:
 	sudo kubectl delete namespace gitlab || true
